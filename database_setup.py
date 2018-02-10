@@ -24,9 +24,9 @@ class Category(Base):
 class Item(Base):
     __tablename__ = 'item'
     name = Column(String(80), nullable=False)
-    cat_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     description = Column(String(250))
-    id = Column(Integer, ForeignKey('category.id'))
+    cat_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
 
     @property
