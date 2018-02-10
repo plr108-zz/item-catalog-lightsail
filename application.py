@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template, request, redirect, url_for, flash, jsonify
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, Item
 app = Flask(__name__)
@@ -11,9 +11,13 @@ session = DBSession()
 
 
 @app.route('/')
-def justDoSomething():
-    print('something')
-    return 'something...!'
+def allCategories():
+    categories = session.query(Category).all()
+    latest = session.query(Item).order_by(desc(Item.id)).limit(5)
+    return render_template('categories.html', categories=categories,
+                           latest=latest)
+    print sqlalchemy.__version__
+    return 'sqlalchemy.__version__'
 
 
 if __name__ == '__main__':

@@ -1,0 +1,16 @@
+<html>
+  <head>
+  </head>
+
+  <body>
+    <div>
+      <b>Categories</b> {% for category in categories %}
+      <p>{{category.name}} {{category.id}}</p> {% endfor %}
+    </div>
+    <div>
+      <b>Latest Items</b> {% for item in latest %}
+      <p>{{item.name}} ({{item.category.name}}) cat_id: {{item.cat_id}} item_id:{{item.id}}</p>
+      {% endfor %}
+    </div>
+  </body>
+</html>
