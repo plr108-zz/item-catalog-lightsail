@@ -1,3 +1,4 @@
+import sys
 from flask import Flask
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import create_engine, desc
@@ -21,6 +22,28 @@ def show_categories():
     latest = session.query(Item).order_by(desc(Item.id)).limit(5)
     return render_template('categories.html', categories=categories,
                            latest=latest)
+
+
+@app.route('/<category_name>')
+def show_category(category_name):
+    try:
+        categories = get_categories()
+        selected_category = session.query(
+            Category).filter_by(name=category_name).one()
+        category_items = session.query(
+            Item).filter_by(cat_id=int(selected_category.id)).all()
+    except:
+        response = 'Category not found: ' + category_name
+        print sys.exc_info()[0]
+    else:
+        category_item_count = str(len(category_items))
+        response = render_template(
+            'category.html',
+            categories=categories,
+            selected_category=selected_category,
+            category_items=category_items,
+            category_item_count=category_item_count)
+    return response
 
 
 if __name__ == '__main__':
