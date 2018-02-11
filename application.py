@@ -11,7 +11,7 @@ session = DBSession()
 
 
 @app.route('/')
-def allCategories():
+def get_categories():
     categories = session.query(Category).all()
     latest = session.query(Item).order_by(desc(Item.id)).limit(5)
     return render_template('categories.html', categories=categories,
