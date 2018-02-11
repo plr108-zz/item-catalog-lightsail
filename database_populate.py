@@ -25,6 +25,7 @@ def addItem(name, description, category):
 
 Raw = addCategory('Raw')
 SmackDown = addCategory('SmackDown')
+WWE_205_Live = addCategory('205 Live')
 addItem('Brock Lesnar', 'The Beast Incarnate', Raw)
 addItem('Finn Balor', 'The Demon King', Raw)
 addItem('Samoa Joe', 'The Destroyer', Raw)
@@ -35,4 +36,6 @@ addItem('Shinsuke Nakamura', 'The Artist', SmackDown)
 addItem('Bobby Roode', 'The Glorious One', SmackDown)
 addItem('Shane McMahon', 'Shane-O-Mac', SmackDown)
 addItem('Randy Orton', 'The Viper', SmackDown)
+addItem('Akira Tozawa', 'The Stamina Monster', WWE_205_Live)
+addItem('Neville', 'The King of the Cruiserweights', WWE_205_Live)
 print 'Database populated'
