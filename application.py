@@ -1,5 +1,4 @@
 from flask import Flask
-import flask
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
