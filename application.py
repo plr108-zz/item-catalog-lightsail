@@ -16,6 +16,12 @@ def get_categories():
     return categories
 
 
+def get_category_by_name(category_name):
+    category = session.query(
+        Category).filter_by(name=category_name).one()
+    return category
+
+
 @app.route('/')
 def show_categories():
     categories = get_categories()
@@ -28,8 +34,7 @@ def show_categories():
 def show_category(category_name):
     try:
         categories = get_categories()
-        selected_category = session.query(
-            Category).filter_by(name=category_name).one()
+        selected_category = get_category_by_name(category_name)
         category_items = session.query(
             Item).filter_by(cat_id=int(selected_category.id)).all()
     except:
