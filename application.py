@@ -46,6 +46,21 @@ def show_category(category_name):
     return response
 
 
+@app.route('/<category_name>/<item_name>')
+def show_item(category_name, item_name):
+    try:
+        selected_category = session.query(
+            Category).filter_by(name=category_name).one()
+        selected_item = session.query(Item).filter_by(
+            name=item_name, category=selected_category).one()
+    except:
+        response = 'Item not found: ' + item_name
+        print sys.exc_info()[0]
+    else:
+        response = render_template('item.html', item=selected_item)
+    return response
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
