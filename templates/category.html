@@ -5,7 +5,7 @@
   <body>
     <div>
       <b>Categories</b> {% for category in categories %}
-      <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a> {{category.id}}</p> {% endfor %}
+      <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></p> {% endfor %}
     </div>
     <div>
       <b>{{selected_category.name}} Items ({{category_item_count}} items)</b> {% for item in category_items %}
