@@ -31,6 +31,7 @@ def get_item_by_names(category_name, item_name):
 
 
 @app.route('/')
+@app.route('/catalog')
 def show_categories():
     categories = get_categories()
     latest = session.query(Item).order_by(desc(Item.id)).limit(5)
@@ -38,7 +39,7 @@ def show_categories():
                            latest=latest)
 
 
-@app.route('/<category_name>')
+@app.route('/catalog/<category_name>')
 def show_category(category_name):
     try:
         categories = get_categories()
@@ -59,7 +60,7 @@ def show_category(category_name):
     return response
 
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/catalog/create', methods=['GET', 'POST'])
 def create_item():
     if request.method == 'POST':
         new_item = Item(name=request.form['name'],
@@ -77,7 +78,7 @@ def create_item():
     return response
 
 
-@app.route('/<category_name>/<item_name>')
+@app.route('/catalog/<category_name>/<item_name>')
 def show_item(category_name, item_name):
     try:
         selected_item = get_item_by_names(category_name, item_name)
@@ -89,7 +90,8 @@ def show_item(category_name, item_name):
     return response
 
 
-@app.route('/<category_name>/<item_name>/edit', methods=['GET', 'POST'])
+@app.route('/catalog/<category_name>/<item_name>/edit',
+           methods=['GET', 'POST'])
 def edit_item(category_name, item_name):
     try:
         selected_item = get_item_by_names(category_name, item_name)
@@ -123,7 +125,8 @@ def edit_item(category_name, item_name):
     return response
 
 
-@app.route('/<category_name>/<item_name>/delete', methods=['GET', 'POST'])
+@app.route('/catalog/<category_name>/<item_name>/delete',
+           methods=['GET', 'POST'])
 def delete_item(category_name, item_name):
     try:
         selected_item = get_item_by_names(category_name, item_name)
