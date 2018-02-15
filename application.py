@@ -123,6 +123,26 @@ def edit_item(category_name, item_name):
     return response
 
 
+@app.route('/<category_name>/<item_name>/delete', methods=['GET', 'POST'])
+def delete_item(category_name, item_name):
+    try:
+        selected_item = get_item_by_names(category_name, item_name)
+    except:
+        response = 'Item not found: ' + item_name
+        print sys.exc_info()[0]
+    else:
+        if request.method == 'GET':
+            response = render_template('delete_item.html', item=selected_item)
+        else:
+            # handle POST request
+            session.delete(selected_item)
+            session.commit()
+            flash(item_name + ' has been deleted')
+            response = redirect(
+                url_for('show_category', category_name=category_name))
+    return response
+
+
 if __name__ == '__main__':
     app.debug = True
     app.secret_key = '#if~you^can_read*this=it`s-too+late'
