@@ -81,6 +81,14 @@ def show_category(category_name):
     return response
 
 
+@app.route('/catalog/<category_name>.json')
+def show_category_json(category_name):
+    category_items = get_category_items_by_category_name(category_name)
+    category_json = jsonify(
+        category_name, [i.serialize for i in category_items])
+    return category_json
+
+
 @app.route('/catalog/create', methods=['GET', 'POST'])
 def create_item():
     if request.method == 'POST':
