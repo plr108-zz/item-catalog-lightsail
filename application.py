@@ -66,7 +66,7 @@ def show_item(category_name, item_name):
     return response
 
 
-@app.route('/addItem/', methods=['GET', 'POST'])
+@app.route('/create', methods=['GET', 'POST'])
 def create_item():
     if request.method == 'POST':
         new_item = Item(name=request.form['name'],
