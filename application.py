@@ -44,6 +44,16 @@ def show_categories():
                            latest=latest)
 
 
+@app.route('/catalog.json')
+def show_catalog_json():
+    categories = get_categories()
+    category_json = [i.serialize for i in categories]
+    latest = get_latest()
+    latest_json = [i.serialize for i in latest]
+    catalog_json = jsonify(Category=category_json, LatestItems=latest_json)
+    return catalog_json
+
+
 @app.route('/catalog/<category_name>')
 def show_category(category_name):
     try:
