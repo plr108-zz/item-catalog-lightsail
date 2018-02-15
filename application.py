@@ -59,18 +59,6 @@ def show_category(category_name):
     return response
 
 
-@app.route('/<category_name>/<item_name>')
-def show_item(category_name, item_name):
-    try:
-        selected_item = get_item_by_names(category_name, item_name)
-    except:
-        response = 'Item not found: ' + item_name
-        print sys.exc_info()[0]
-    else:
-        response = render_template('item.html', item=selected_item)
-    return response
-
-
 @app.route('/create', methods=['GET', 'POST'])
 def create_item():
     if request.method == 'POST':
@@ -86,6 +74,18 @@ def create_item():
     else:
         categories = get_categories()
         response = render_template('new_item.html', categories=categories)
+    return response
+
+
+@app.route('/<category_name>/<item_name>')
+def show_item(category_name, item_name):
+    try:
+        selected_item = get_item_by_names(category_name, item_name)
+    except:
+        response = 'Item not found: ' + item_name
+        print sys.exc_info()[0]
+    else:
+        response = render_template('item.html', item=selected_item)
     return response
 
 
