@@ -119,6 +119,14 @@ def show_item(category_name, item_name):
     return response
 
 
+@app.route('/catalog/<category_name>/<item_name>.json')
+def show_item_json(category_name, item_name):
+    item = get_item_by_names(category_name, item_name)
+    item_json = jsonify(
+        item_name, [item.serialize])
+    return item_json
+
+
 @app.route('/catalog/<category_name>/<item_name>/edit',
            methods=['GET', 'POST'])
 def edit_item(category_name, item_name):
