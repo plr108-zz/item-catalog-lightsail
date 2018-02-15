@@ -89,6 +89,42 @@ def create_item():
     return response
 
 
+@app.route('/<category_name>/<item_name>/edit', methods=['GET', 'POST'])
+def edit_item(category_name, item_name):
+    try:
+        selected_item = get_item_by_names(category_name, item_name)
+    except:
+        response = 'Item not found: ' + item_name
+        print sys.exc_info()[0]
+    else:
+        categories = get_categories()
+        if request.method == 'GET':
+            response = render_template('edit_item.html',
+                                       categories=categories,
+                                       item=selected_item)
+
+        else:
+            # handle POST request
+            if request.form['name']:
+                selected_item.name = request.form['name']
+                selected_item.description = request.form['description']
+                selected_item.cat_id = get_category_by_name(
+                    request.form['category']).id
+                session.commit()
+                response = redirect(
+                    url_for('show_item',
+                            category_name=selected_item.category.name,
+                            item_name=selected_item.name))
+            else:
+                # handle case where name is empty
+                flash('Name cannot be empty.  Please edit the item again.')
+                response = render_template('edit_item.html',
+                                           categories=categories,
+                                           item=selected_item)
+    return response
+
+
 if __name__ == '__main__':
     app.debug = True
+    app.secret_key = '#if~you^can_read*this=it`s-too+late'
     app.run(host='0.0.0.0', port=8000)
