@@ -30,11 +30,16 @@ def get_item_by_names(category_name, item_name):
     return selected_item
 
 
+def get_latest():
+    latest = session.query(Item).order_by(desc(Item.id)).limit(5)
+    return latest
+
+
 @app.route('/')
 @app.route('/catalog')
 def show_categories():
     categories = get_categories()
-    latest = session.query(Item).order_by(desc(Item.id)).limit(5)
+    latest = get_latest()
     return render_template('categories.html', categories=categories,
                            latest=latest)
 
