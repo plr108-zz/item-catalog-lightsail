@@ -102,7 +102,6 @@ def edit_item(category_name, item_name):
             response = render_template('edit_item.html',
                                        categories=categories,
                                        item=selected_item)
-
         else:
             # handle POST request
             if request.form['name']:
