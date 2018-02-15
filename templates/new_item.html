@@ -1,0 +1,24 @@
+<html>
+  <head>
+  </head>
+
+  <body>
+    <div>
+      <b>Add Item</b>
+      <form action='{{url_for("create_item")}}' method='POST'>
+        <p>Title</p>
+        <input type='text' size='30' name='name'>
+        <p>Description</p>
+        <input type='text' size='30' name='description'>
+        <p>
+          <select name='category'>
+          {% for category in categories %}
+          <option>{{category.name}}</option>
+          {% endfor %}
+        </select>
+        </p>
+        <p><input type='submit' value='Add Item'></p>
+      </form>
+    </div>
+  </body>
+</html>

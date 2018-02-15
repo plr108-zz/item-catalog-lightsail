@@ -8,6 +8,7 @@
       <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></p> {% endfor %}
     </div>
     <div>
+      <p><a href='{{url_for("create_item",categories=categories)}}'>Add Item</a></p>
       <b>{{selected_category.name}} Items ({{category_item_count}} items)</b> {% for item in category_items %}
       <p><a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'>{{item.name}}</a></p>
       {% endfor %}

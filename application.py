@@ -66,6 +66,24 @@ def show_item(category_name, item_name):
     return response
 
 
+@app.route('/addItem/', methods=['GET', 'POST'])
+def create_item():
+    if request.method == 'POST':
+        new_item = Item(name=request.form['name'],
+                        description=request.form['description'],
+                        category=get_category_by_name(
+                            request.form['category']))
+        session.add(new_item)
+        session.commit()
+        response = redirect(
+            url_for('show_category', category_name=request.form['category']))
+
+    else:
+        categories = get_categories()
+        response = render_template('new_item.html', categories=categories)
+    return response
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
