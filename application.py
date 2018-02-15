@@ -22,6 +22,13 @@ def get_category_by_name(category_name):
     return category
 
 
+def get_category_items_by_category_name(category_name):
+    category = get_category_by_name(category_name)
+    category_items = session.query(Item).filter_by(
+        cat_id=int(category.id)).all()
+    return category_items
+
+
 def get_item_by_names(category_name, item_name):
     selected_category = session.query(
         Category).filter_by(name=category_name).one()
@@ -59,8 +66,7 @@ def show_category(category_name):
     try:
         categories = get_categories()
         selected_category = get_category_by_name(category_name)
-        category_items = session.query(
-            Item).filter_by(cat_id=int(selected_category.id)).all()
+        category_items = get_category_items_by_category_name(category_name)
     except:
         response = 'Category not found: ' + category_name
         print sys.exc_info()[0]
