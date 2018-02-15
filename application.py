@@ -22,6 +22,14 @@ def get_category_by_name(category_name):
     return category
 
 
+def get_item_by_names(category_name, item_name):
+    selected_category = session.query(
+        Category).filter_by(name=category_name).one()
+    selected_item = session.query(Item).filter_by(
+        name=item_name, category=selected_category).one()
+    return selected_item
+
+
 @app.route('/')
 def show_categories():
     categories = get_categories()
@@ -54,10 +62,7 @@ def show_category(category_name):
 @app.route('/<category_name>/<item_name>')
 def show_item(category_name, item_name):
     try:
-        selected_category = session.query(
-            Category).filter_by(name=category_name).one()
-        selected_item = session.query(Item).filter_by(
-            name=item_name, category=selected_category).one()
+        selected_item = get_item_by_names(category_name, item_name)
     except:
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
