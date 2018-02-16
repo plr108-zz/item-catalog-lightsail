@@ -1,40 +1,35 @@
-<html>
-  <head>
-  </head>
-
-  <body>
+{% extends 'main.html' %} {% block content %}
+<div>
+  <b>Edit Item</b>
+  <form action='{{url_for("edit_item",category_name=item.category.name,item_name=item.name)}}' method='post'>
+    <p>Title</p>
+    <input type='text' size='30' name='name' value='{{item.name}}'>
+    <p>Description</p>
+    <input type='text' size='30' name='description' value='{{item.description}}'>
+    <p>
+      <select name='category'> 
+        {% for category in categories %}
+          {% if item.category.name == category.name %}
+          <option selected>{{category.name}}</option>
+          {% else %}
+          <option>{{category.name}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </p>
+    <p><input type='submit' value='Submit'></p>
+    <p><a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'>Cancel</a></p>
+  </form>
+  {% with messages = get_flashed_messages() %}
+  <div>
+    {% if messages %}
     <div>
-      <b>Edit Item</b>
-      <form action='{{url_for("edit_item",category_name=item.category.name,item_name=item.name)}}' method='post'>
-        <p>Title</p>
-        <input type='text' size='30' name='name' value='{{item.name}}'>
-        <p>Description</p>
-        <input type='text' size='30' name='description' value='{{item.description}}'>
-        <p>
-          <select name='category'>
-          {% for category in categories %}
-            {% if item.category.name == category.name %}
-            <option selected>{{category.name}}</option>
-            {% else %}
-            <option>{{category.name}}</option>
-            {% endif %}
-          {% endfor %}
-          </select>
-        </p>
-        <p><input type='submit' value='Submit'></p>
-        <p><a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'>Cancel</a></p>
-      </form>
-      {% with messages = get_flashed_messages() %}
-      <div>
-        {% if messages %}
-        <div>
-          {% for message in messages %}
-          <p><strong>{{message}}</strong></p>
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
-      {% endwith %}
+      {% for message in messages %}
+      <p><strong>{{message}}</strong></p>
+      {% endfor %}
     </div>
-  </body>
-</html>
+    {% endif %}
+  </div>
+  {% endwith %}
+</div>
+{% endblock %}

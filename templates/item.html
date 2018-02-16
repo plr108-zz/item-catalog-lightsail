@@ -1,14 +1,9 @@
-<html>
-  <head>
-  </head>
-
-  <body>
-    <div>
-      <b>{{item.name}}</b>
-      <p>{{item.description}}</p>
-      <p><a href='{{url_for("edit_item",category_name=item.category.name,item_name=item.name)}}'>Edit</a></p>
-      <p><a href='{{url_for("delete_item",category_name=item.category.name,item_name=item.name)}}'>Delete</a></p>
-      <p><a href='{{url_for("show_category",category_name=item.category.name)}}'>Back to {{item.category.name}}</a></p>
-    </div>
-  </body>
-</html>
+{% extends 'main.html' %} {% block content %}
+<div>
+  <b>{{item.name}}</b>
+  <p>{{item.description}}</p>
+  <p><a href='{{url_for("edit_item",category_name=item.category.name,item_name=item.name)}}'>Edit</a></p>
+  <p><a href='{{url_for("delete_item",category_name=item.category.name,item_name=item.name)}}'>Delete</a></p>
+  <p><a href='{{url_for("show_category",category_name=item.category.name)}}'>Back to {{item.category.name}}</a></p>
+</div>
+{% endblock %}
