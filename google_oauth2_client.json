@@ -1,0 +1,12 @@
+{
+  "web": {
+    "client_id": "775572830261-290jikk0ft3eg59e8hqlu7gmmch2d1ja.apps.googleusercontent.com",
+    "project_id": "plr108-udacity-fsnd-catalog",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://accounts.google.com/o/oauth2/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "30aGhpNqZZ24lV5B60RiAely",
+    "redirect_uris": ["http://localhost:8000"],
+    "javascript_origins": ["http://localhost:8000"]
+  }
+}
