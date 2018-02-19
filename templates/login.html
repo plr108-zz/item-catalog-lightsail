@@ -38,7 +38,7 @@
                 $('#result').html(result + '  Redirecting...');
                 setTimeout(function() {
                   window.location.href = "/catalog";
-                }, 4000);
+                }, 1000);
               } else if (authResult.error) {
                 $('#result').html('There was an error:\n' + authResult.error);
               } else {
