@@ -144,14 +144,10 @@ def gconnect():
     if not user_id:
         user_id = create_user(login_session)
     login_session['user_id'] = user_id
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    login_msg = "you are now logged in as %s" % login_session['username']
+    login_msg = login_session['username'] + ' has been logged in'
     flash(login_msg)
     print(login_msg)
-    return output
+    return login_msg
 
 
 @app.route('/gdisconnect')
