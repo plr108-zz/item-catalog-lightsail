@@ -154,9 +154,7 @@ def gconnect():
 def gdisconnect():
     access_token = login_session.get('access_token')
     if access_token is None:
-        response = make_response(json.dumps(
-            'Current user not connected.'), 401)
-        response.headers['Content-Type'] = 'application/json'
+        flash_msg = 'Current user not connected.'
     else:
         url = 'https://accounts.google.com/o/oauth2/revoke?token='
         url += login_session['access_token']
@@ -168,14 +166,12 @@ def gdisconnect():
             del login_session['gplus_id']
             del login_session['username']
             del login_session['email']
-            disconnect_msg = username + ' has been logged out'
-            response = make_response(json.dumps(disconnect_msg), 200)
-            response.headers['Content-Type'] = 'application/json'
+            flash_msg = username + ' has been logged out'
         else:
-            response = make_response(json.dumps(
-                'Failed to revoke token for given user.', 400))
-            response.headers['Content-Type'] = 'application/json'
-    return response
+            flash_msg = 'Error logging out ' + username
+    flash(flash_msg)
+    # redirect to top-level and show categories
+    return redirect('/')
 
 
 @app.route('/')

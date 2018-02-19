@@ -1,5 +1,18 @@
 {% extends 'main.html' %} {% block content %}
 <div>
+  {% with messages = get_flashed_messages() %}
+  <div>
+    {% if messages %}
+    <div>
+      {% for message in messages %}
+      <p><strong>{{message}}</strong></p>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  {% endwith %}
+</div>
+<div>
   <b>Categories</b> {% for category in categories %}
   <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></p> {% endfor %}
 </div>
