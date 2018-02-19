@@ -36,9 +36,7 @@
               // Handle or verify the server response if necessary.
               if (result) {
                 $('#result').html(result + '  Redirecting...');
-                setTimeout(function() {
-                  window.location.href = "/catalog";
-                }, 1000);
+                window.location.href = "/catalog";
               } else if (authResult.error) {
                 $('#result').html('There was an error:\n' + authResult.error);
               } else {
