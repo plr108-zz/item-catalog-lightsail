@@ -75,7 +75,6 @@ def show_login():
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
-
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -168,7 +167,8 @@ def gdisconnect():
             del login_session['email']
             flash_msg = username + ' has been logged out'
         else:
-            flash_msg = 'Error logging out ' + username
+            print(result['status'])
+            flash_msg = 'Error logging out user'
     flash(flash_msg)
     # redirect to top-level and show categories
     return redirect('/')
