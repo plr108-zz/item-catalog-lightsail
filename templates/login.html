@@ -11,12 +11,23 @@
 
   <body>
     <!-- Google Sign-In button -->
+    <p><b>Sign in using your Google account</b></p>
     <div id="signinButton">
       <span class="g-signin2" data-accesstype="offline" data-onsuccess="signInCallback"></span>
     </div>
     <!-- div for showing sign-in results -->
     <div id="result"></div>
     <!-- Google Sign-In callback script -->
+    <div>
+      <p><b>Categories</b></p> {% for category in categories %}
+      <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></p> {% endfor %}
+    </div>
+    <div>
+      <p><a href='{{url_for("create_item")}}'>Add Item</a></p>
+      <b>Latest Items</b> {% for item in latest %}
+      <p><a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'>{{item.name}} ({{item.category.name}})</a></p>
+      {% endfor %}
+    </div>
     <script>
       function signInCallback(authResult) {
         // if login successful
