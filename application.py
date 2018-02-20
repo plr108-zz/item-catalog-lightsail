@@ -272,29 +272,35 @@ def edit_item(category_name, item_name):
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
     else:
-        categories = get_categories()
-        if request.method == 'GET':
-            response = render_template('edit_item.html',
-                                       categories=categories,
-                                       item=selected_item)
+        if 'username' not in login_session:
+            response = redirect(
+                url_for('show_item',
+                        category_name=selected_item.category.name,
+                        item_name=selected_item.name))
         else:
-            # handle POST request
-            if request.form['name']:
-                selected_item.name = request.form['name']
-                selected_item.description = request.form['description']
-                selected_item.cat_id = get_category_by_name(
-                    request.form['category']).id
-                session.commit()
-                response = redirect(
-                    url_for('show_item',
-                            category_name=selected_item.category.name,
-                            item_name=selected_item.name))
-            else:
-                # handle case where name is empty
-                flash('Name cannot be empty.  Please edit the item again.')
+            categories = get_categories()
+            if request.method == 'GET':
                 response = render_template('edit_item.html',
                                            categories=categories,
                                            item=selected_item)
+            else:
+                # handle POST request
+                if request.form['name']:
+                    selected_item.name = request.form['name']
+                    selected_item.description = request.form['description']
+                    selected_item.cat_id = get_category_by_name(
+                        request.form['category']).id
+                    session.commit()
+                    response = redirect(
+                        url_for('show_item',
+                                category_name=selected_item.category.name,
+                                item_name=selected_item.name))
+                else:
+                    # handle case where name is empty
+                    flash('Name cannot be empty.  Please edit the item again.')
+                    response = render_template('edit_item.html',
+                                               categories=categories,
+                                               item=selected_item)
     return response
 
 
@@ -307,15 +313,22 @@ def delete_item(category_name, item_name):
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
     else:
-        if request.method == 'GET':
-            response = render_template('delete_item.html', item=selected_item)
-        else:
-            # handle POST request
-            session.delete(selected_item)
-            session.commit()
-            flash(item_name + ' has been deleted')
+        if 'username' not in login_session:
             response = redirect(
-                url_for('show_category', category_name=category_name))
+                url_for('show_item',
+                        category_name=selected_item.category.name,
+                        item_name=selected_item.name))
+        else:
+            if request.method == 'GET':
+                response = render_template('delete_item.html',
+                                           item=selected_item)
+            else:
+                # handle POST request
+                session.delete(selected_item)
+                session.commit()
+                flash(item_name + ' has been deleted')
+                response = redirect(
+                    url_for('show_category', category_name=category_name))
     return response
 
 
