@@ -1,4 +1,7 @@
 <div>
+  Catalog App
+</div>
+<div>
   <p>{% if 'username' in session %}
     <a href='{{url_for("gdisconnect")}}'>Logout</a> {% else %}
     <a href='{{url_for("show_login")}}'>Login</a> {% endif %}
