@@ -227,7 +227,9 @@ def show_category_json(category_name):
 
 @app.route('/catalog/create', methods=['GET', 'POST'])
 def create_item():
-    if request.method == 'POST':
+    if 'username' not in login_session:
+        response = redirect(url_for('show_categories'))
+    elif request.method == 'POST':
         new_item = Item(name=request.form['name'],
                         description=request.form['description'],
                         category=get_category_by_name(
