@@ -163,15 +163,20 @@ def gdisconnect():
         url += login_session['access_token']
         h = httplib2.Http()
         result = h.request(url, 'GET')[0]
-        if result['status'] == '200':
+        # Google ouath2 API returns a 400 status when token has expired
+        # and deleted.  In this case logout the user
+        if result['status'] == '200' or result['status'] == '400':
             username = login_session.get('username')
             del login_session['access_token']
             del login_session['google_id']
             del login_session['username']
             del login_session['email']
-            flash_msg = username + ' has been logged out'
+            if result['status'] == '200':
+                flash_msg = username + ' has been logged out'
+            else:
+                flash_msg = username
+                flash_msg += "'s session expired and has been logged out'"
         else:
-            print(result['status'])
             flash_msg = 'Error logging out user'
     flash(flash_msg)
     # redirect to top-level and show categories
