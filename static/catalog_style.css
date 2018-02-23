@@ -8,3 +8,7 @@
   color: black;
   padding: 5 0 10 0;
 }
+
+#flash {
+  min-height: 20px;
+}
