@@ -1,24 +1,5 @@
-{% extends 'main.html' %} {% block content %}
-<div>
-  <b>Categories</b> {% for category in categories %}
-  <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></p> {% endfor %}
+{% extends 'main.html' %} {% block content %} {% include "flash_content.html" %} {% block flash_content %} {% endblock %}
+<div class='row'>
+  {% include "categories_content.html" %} {% block categories_content %} {% endblock %} {% include "items_content.html" %} {% block items_content %} {% endblock %}
 </div>
-<div>
-  {% if 'username' in session %}
-  <p><a href='{{url_for("create_item")}}'>Add Item</a></p>
-  {% endif %}
-  <b>{{selected_category.name}} Items ({{category_item_count}} items)</b> {% for item in category_items %}
-  <p><a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'>{{item.name}}</a></p>
-  {% endfor %}
-</div>
-{% with messages = get_flashed_messages() %}
-<div>
-  {% if messages %}
-  <div>
-    {% for message in messages %}
-    <p><strong>{{message}}</strong></p>
-    {% endfor %}
-  </div>
-  {% endif %}
-</div>
-{% endwith %} {% endblock %}
+{% endblock %}
