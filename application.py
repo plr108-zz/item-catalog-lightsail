@@ -175,7 +175,7 @@ def gdisconnect():
                 flash_msg = username + ' has been logged out'
             else:
                 flash_msg = username
-                flash_msg += "'s session expired and has been logged out'"
+                flash_msg += "'s session expired and has been logged out"
         else:
             flash_msg = 'Error logging out user'
     flash(flash_msg)
