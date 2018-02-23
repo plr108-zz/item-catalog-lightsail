@@ -12,10 +12,7 @@
   {% endwith %}
 </div>
 <div class='row'>
-  <div class='col-xs-6'>
-    <h3>Categories</h3> {% for category in categories %}
-    <h4><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></h4> {% endfor %}
-  </div>
+  {% include "category_content.html" %} {% block category_content %} {% endblock %}
   <div class='col-xs-6'>
     <h3>Latest Items</h3> {% for item in latest %}
     <a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'><span class='item_name'>{{item.name}}</span> <span='item_category'>({{item.category.name}})</span></a></p>
