@@ -12,12 +12,6 @@
   {% endwith %}
 </div>
 <div class='row'>
-  {% include "category_content.html" %} {% block category_content %} {% endblock %}
-  <div class='col-xs-6'>
-    <h3>Latest Items</h3> {% for item in latest %}
-    <a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'><span class='item_name'>{{item.name}}</span> <span='item_category'>({{item.category.name}})</span></a></p>
-    {% endfor %} {% if 'username' in session %}
-    <a class='btn btn-lg btn-primary' href='{{url_for("create_item")}}'>Add Item</a> {% endif %}
-  </div>
+  {% include "category_content.html" %} {% block category_content %} {% endblock %} {% include "latest_content.html" %} {% block latest_content %} {% endblock %}
 </div>
 {% endblock %}
