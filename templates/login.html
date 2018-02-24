@@ -14,16 +14,16 @@
         <h3 id='catalog-header-title'>Catalog App</h3>
         <nav>
           <ul class='nav nav-pills pull-left'>
-    <!-- Google Sign-In button -->
-    <div id="signinButton">
-      <span class="g-signin2" data-accesstype="offline" data-onsuccess="signInCallback"></span>
-    </div>
+            <!-- Google Sign-In button -->
+            <div id="signinButton">
+              <span class="g-signin2" data-accesstype="offline" data-onsuccess="signInCallback"></span>
+            </div>
           </ul>
         </nav>
       </div>
       <div id='sign_in_prompt'>Click the button to Sign in using your Google account</div>
-    <!-- div for showing sign-in results -->
-    <div id="result"></div>
+      <!-- div for showing sign-in results -->
+      <div id="result"></div>
       <div class='row'>
         {% include "categories_content.html" %} {% block categories_content %} {% endblock %} {% include "latest_content.html" %} {% block latest_content %} {% endblock %}
       </div>
