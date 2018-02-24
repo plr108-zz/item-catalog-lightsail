@@ -16,7 +16,6 @@
     </div>
     <!-- div for showing sign-in results -->
     <div id="result"></div>
-    <!-- Google Sign-In callback script -->
     <div>
       <p><b>Categories</b></p> {% for category in categories %}
       <p><a href='{{url_for("show_category",category_name=category.name)}}'>{{category.name}}</a></p> {% endfor %}
@@ -29,6 +28,7 @@
       <p><a href='{{url_for("show_item",category_name=item.category.name,item_name=item.name)}}'>{{item.name}} ({{item.category.name}})</a></p>
       {% endfor %}
     </div>
+    <!-- Google Sign-In callback script -->
     <script>
       function signInCallback(authResult) {
         // if login successful
