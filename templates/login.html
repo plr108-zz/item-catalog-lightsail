@@ -34,6 +34,8 @@
         if (authResult['code']) {
           // hide the sign-in button
           $('#signinButton').attr('style', 'display: none');
+          // hide sign-in prompt
+          $('#sign_in_prompt').attr('style', 'display: none');
           // Send the one-time-use code to the server, if the server responds,
           // write a 'login successful' message to the web page and then
           // redirect back to the main page
