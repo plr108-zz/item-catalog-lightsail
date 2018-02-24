@@ -51,7 +51,7 @@
                 $('#result').html(result);
                 window.location.href = "/catalog";
               } else if (authResult.error) {
-                $('#result').html('There was an error:\n' + authResult.error);
+                $('#result').html('There was an error: ' + authResult.error);
               } else {
                 $('#result').html(
                   'Failed to make a server-side call.  ' +
