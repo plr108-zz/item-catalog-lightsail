@@ -1,6 +1,8 @@
 <html>
   <head>
     {% include "main_head.html" %} {% block head %} {% endblock %}
+    <!-- jQuery, required for Google Sign-In callback function -->
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
     <!-- Google Sign-In scripts and metadata -->
     <meta name="google-signin-scope" content="email">
     <meta name="google-signin-client_id" content="775572830261-290jikk0ft3eg59e8hqlu7gmmch2d1ja.apps.googleusercontent.com">
