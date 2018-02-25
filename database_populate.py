@@ -23,19 +23,23 @@ def addItem(name, description, category):
     return
 
 
-Raw = addCategory('Raw')
-SmackDown = addCategory('SmackDown')
-WWE_205_Live = addCategory('205 Live')
-addItem('Brock Lesnar', 'The Beast Incarnate', Raw)
-addItem('Finn Balor', 'The Demon King', Raw)
-addItem('Samoa Joe', 'The Destroyer', Raw)
-addItem('Triple H', 'The Game', Raw)
-addItem('Braun Strowman', 'The Monster Among Men', Raw)
-addItem('John Cena', 'The Face That Runs The Place', SmackDown)
-addItem('Shinsuke Nakamura', 'The Artist', SmackDown)
-addItem('Bobby Roode', 'The Glorious One', SmackDown)
-addItem('Shane McMahon', 'Shane-O-Mac', SmackDown)
-addItem('Randy Orton', 'The Viper', SmackDown)
-addItem('Akira Tozawa', 'The Stamina Monster', WWE_205_Live)
-addItem('Neville', 'The King of the Cruiserweights', WWE_205_Live)
+Soccer = addCategory('Soccer')
+Basketball = addCategory('Basketball')
+Baseball = addCategory('Baseball')
+Frisbee = addCategory('Frisbee')
+Snowboarding = addCategory('Snowboarding')
+RockClimbing = addCategory('Rock Climbing')
+Foosball = addCategory('Foosball')
+Skating = addCategory('Skating')
+Hockey = addCategory('Hockey')
+addItem('Soccer Cleats', 'Better than barefoot', Soccer)
+addItem('Jersey', 'Your uni top', Soccer)
+addItem('Bat', 'You hit the ball with it', Baseball)
+addItem('Frisbee', 'You throw it', Frisbee)
+addItem('Shinguards', 'Safety First', Soccer)
+addItem('Two shinguards', '..are better than one!', Soccer)
+snowboarding_description = 'Way better than Skiing.  Also, Jamie Anderson.  '
+snowboarding_description += 'Red Gerard.  Chloe Kim.  Even Shaun White.  '
+snowboarding_description += 'Need I say more??'
+addItem('Snowboarding', snowboarding_description, Snowboarding)
 print 'Database populated'
