@@ -2,11 +2,9 @@
   <h3 id='catalog-header-title'>Catalog App</h3>
   <nav>
     <ul class='nav nav-pills pull-left'>
-      <li role='presentation' class='active'>
-        {% if 'username' in session %}
-        <a href='{{url_for("gdisconnect")}}'>Logout</a> {% else %}
-        <a href='{{url_for("show_login")}}'>Login</a> {% endif %}
-      </li>
+      {% if 'username' in session %}
+      <a class='btn btn-primary' href='{{url_for("gdisconnect")}}'>Logout</a> {% else %}
+      <a class='btn btn-primary' href='{{url_for("show_login")}}'>Login</a> {% endif %}
     </ul>
   </nav>
 </div>
