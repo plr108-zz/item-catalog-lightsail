@@ -8,6 +8,11 @@ session = DBSession()
 
 
 def addCategory(name):
+    """Adds a Category record to the database
+
+    Args:
+        name: the value of Category.name for the new record
+    """
     category = Category(name=name)
     session.add(category)
     session.commit()

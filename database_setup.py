@@ -9,6 +9,13 @@ Base = declarative_base()
 
 
 class User(Base):
+    """User table class
+
+    Attributes:
+        id: a unique identifier for the system user
+        name: the user's name
+        email: the user's email address
+    """
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
@@ -16,6 +23,12 @@ class User(Base):
 
 
 class Category(Base):
+    """Category table class
+
+    Attributes:
+        id: a unique identifier for the category
+        name: the category's name
+    """
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
@@ -29,6 +42,17 @@ class Category(Base):
 
 
 class Item(Base):
+    """Item table class
+
+    Attributes:
+        name: the item's name
+        id: a unique identifier for the item
+        description: a description of the item
+        cat_id: the category.id of the related category
+        category: the related category
+        user_id: the user_id of the user who created the item
+        user: the user who created the item
+    """
     __tablename__ = 'item'
     name = Column(String(80), nullable=False)
     id = Column(Integer, primary_key=True)

@@ -12,27 +12,48 @@ from functools import wraps
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
+# Import the name of the place where the Flask application is defined
 app = Flask(__name__)
+# Load the Catalog database and create a database session object
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+# Get the client id for Google OAuth2 Sign-In
 CLIENT_ID = json.loads(
     open('google_oauth2_client.json', 'r').read())['web']['client_id']
 
 
 def get_categories():
+    """Get all Category records from the Catalog database
+
+    Returns: a list of all Category records
+    """
     categories = session.query(Category).all()
     return categories
 
 
 def get_category_by_name(category_name):
+    """Get the first Category with a matching name
+
+    Args:
+        category_name: the value of Category.name to search for
+
+    Returns: the matching Category record
+    """
     category = session.query(
         Category).filter_by(name=category_name).one()
     return category
 
 
 def get_category_items_by_category_name(category_name):
+    """Get all Item records associated with a Category name
+
+    Args:
+        category_name: the value of Category.name to search for
+
+    Returns: a list of all related Item records
+    """
     category = get_category_by_name(category_name)
     category_items = session.query(Item).filter_by(
         cat_id=int(category.id)).all()
@@ -40,6 +61,14 @@ def get_category_items_by_category_name(category_name):
 
 
 def get_item_by_names(category_name, item_name):
+    """Get an Item record associated with a Category name and an Item name
+
+    Args:
+        category_name: the value of Category.name to search for
+        item_name: the value of Item.name to search for
+
+    Returns: the matching Item record
+    """
     selected_category = session.query(
         Category).filter_by(name=category_name).one()
     selected_item = session.query(Item).filter_by(
@@ -48,11 +77,22 @@ def get_item_by_names(category_name, item_name):
 
 
 def get_latest():
+    """Get the last five Items created
+
+    Returns: a list of the last five Item records created
+    """
     latest = session.query(Item).order_by(desc(Item.id)).limit(5)
     return latest
 
 
 def create_user(login_session):
+    """Add a new user record to the User table
+
+    Args:
+        login_session: the login_session object
+
+    Returns: the value of USer.id from the new User record
+    """
     newUser = User(name=login_session['username'], email=login_session[
                    'email'])
     session.add(newUser)
@@ -62,6 +102,13 @@ def create_user(login_session):
 
 
 def get_user_id(email):
+    """Get the first user id related to an email address
+
+    Args:
+        email: the email address (User.email value) to search for
+
+    Returns: the value of User.id for the first matching User record
+    """
     try:
         user = session.query(User).filter_by(email=email).one()
         return user.id
@@ -72,6 +119,16 @@ def get_user_id(email):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        """Decorator for verifying a user is currently logged in
+
+        Args:
+            *args: the assigned function arguments
+            **kwargs: the updated funciton arguments
+
+        Returns: The original function if a user is logged in.  Otherwise
+                 the user is redirected to the login page and prompted to
+                 login.
+        """
         if 'username' in login_session:
             return f(*args, **kwargs)
         else:
@@ -82,6 +139,9 @@ def login_required(f):
 
 @app.route('/login')
 def show_login():
+    """Show the login page
+    """
+    # Set login_session state as a 32 bit random alphanumeric string
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
@@ -93,6 +153,8 @@ def show_login():
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+    """Try third party login via Google Sign-In
+    """
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -155,7 +217,7 @@ def gconnect():
     login_session['email'] = data['email']
     login_session['provider'] = 'google'
     user_id = get_user_id(login_session['email'])
-    # if user doesn't have a user_id then create new user_id
+    # If user doesn't have a user_id then create new user_id
     if not user_id:
         user_id = create_user(login_session)
     login_session['user_id'] = user_id
@@ -167,6 +229,8 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    """Disconnect from Google Sign-In
+    """
     access_token = login_session.get('access_token')
     if access_token is None:
         flash_msg = 'Current user not connected.'
@@ -176,7 +240,7 @@ def gdisconnect():
         h = httplib2.Http()
         result = h.request(url, 'GET')[0]
         # Google ouath2 API returns a 400 status when token has expired
-        # and deleted.  In this case logout the user
+        # and deleted.  In this case logout the user.
         if result['status'] == '200' or result['status'] == '400':
             username = login_session.get('username')
             del login_session['access_token']
@@ -191,13 +255,19 @@ def gdisconnect():
         else:
             flash_msg = 'Error logging out user'
     flash(flash_msg)
-    # redirect to top-level and show categories
+    # Redirect to top-level and show categories
     return redirect('/')
 
 
 @app.route('/')
 @app.route('/catalog')
 def show_categories():
+    """Show the categories page
+
+        NOTE: I only kept the /catalog endpoint because it was shown in
+              the Project Display Example.  This could be simplified to only
+              use the top-level route.
+    """
     categories = get_categories()
     latest = get_latest()
     return render_template('categories.html', categories=categories,
@@ -206,6 +276,10 @@ def show_categories():
 
 @app.route('/catalog.json')
 def show_catalog_json():
+    """Show JSON endpoint for categories page.
+
+       Contains information on all categoies and the last five items created.
+    """
     categories = get_categories()
     category_json = [i.serialize for i in categories]
     latest = get_latest()
@@ -216,6 +290,11 @@ def show_catalog_json():
 
 @app.route('/catalog/<category_name>')
 def show_category(category_name):
+    """Show information on a specific category
+
+    Args:
+        category_name: the category to show
+    """
     try:
         categories = get_categories()
         selected_category = get_category_by_name(category_name)
@@ -236,6 +315,11 @@ def show_category(category_name):
 
 @app.route('/catalog/<category_name>.json')
 def show_category_json(category_name):
+    """Show information on a specific category as JSON
+
+    Args:
+        category_name: the category to show
+    """
     category_items = get_category_items_by_category_name(category_name)
     category_json = jsonify(
         category_name, [i.serialize for i in category_items])
@@ -245,6 +329,11 @@ def show_category_json(category_name):
 @app.route('/catalog/create', methods=['GET', 'POST'])
 @login_required
 def create_item():
+    """Show information related to creating a new catalog item
+
+    For a GET request: show a form to create a new item
+    For a POST request: try to save the new item to the database
+    """
     if request.method == 'POST':
         new_item = Item(name=request.form['name'],
                         description=request.form['description'],
@@ -253,17 +342,26 @@ def create_item():
                         user_id=login_session['user_id'])
         session.add(new_item)
         session.commit()
+        # Show the category associated with the new item
         response = redirect(
             url_for('show_category', category_name=request.form['category']))
 
     else:
+        # Handle GET request
         categories = get_categories()
+        # Show the create new item form
         response = render_template('new_item.html', categories=categories)
     return response
 
 
 @app.route('/catalog/<category_name>/<item_name>')
 def show_item(category_name, item_name):
+    """Show information on the selected item
+
+    Args:
+        category_name: the name of the category associated with the item
+        item_name: the name of the item to show
+    """
     try:
         selected_item = get_item_by_names(category_name, item_name)
     except:
@@ -276,6 +374,12 @@ def show_item(category_name, item_name):
 
 @app.route('/catalog/<category_name>/<item_name>.json')
 def show_item_json(category_name, item_name):
+    """Show information on the selected item as JSON
+
+    Args:
+        category_name: the name of the category associated with the item
+        item_name: the name of the item to show
+    """
     item = get_item_by_names(category_name, item_name)
     item_json = jsonify(
         item_name, [item.serialize])
@@ -286,6 +390,15 @@ def show_item_json(category_name, item_name):
            methods=['GET', 'POST'])
 @login_required
 def edit_item(category_name, item_name):
+    """Show information related to editing the selected item
+
+    Args:
+        category_name: the name of the category associated with the item
+        item_name: the name of the item to show
+
+    For a GET request: show a form to edit the selected item
+    For a POST request: try to update the edited item in the database
+    """
     try:
         selected_item = get_item_by_names(category_name, item_name)
     except:
@@ -300,23 +413,26 @@ def edit_item(category_name, item_name):
         else:
             categories = get_categories()
             if request.method == 'GET':
+                # Show the edit item form
                 response = render_template('edit_item.html',
                                            categories=categories,
                                            item=selected_item)
             else:
-                # handle POST request
+                # Handle POST request
                 if request.form['name']:
+                    # Try to update the item's database record
                     selected_item.name = request.form['name']
                     selected_item.description = request.form['description']
                     selected_item.cat_id = get_category_by_name(
                         request.form['category']).id
                     session.commit()
+                    # Show the updated item
                     response = redirect(
                         url_for('show_item',
                                 category_name=selected_item.category.name,
                                 item_name=selected_item.name))
                 else:
-                    # handle case where name is empty
+                    # Handle case where no input is provided for the item name
                     flash('Name cannot be empty.  Please edit the item again.')
                     response = render_template('edit_item.html',
                                                categories=categories,
@@ -328,6 +444,15 @@ def edit_item(category_name, item_name):
            methods=['GET', 'POST'])
 @login_required
 def delete_item(category_name, item_name):
+    """Show information related to deleting the selected item
+
+    Args:
+        category_name: the name of the category associated with the item
+        item_name: the name of the item to show
+
+    For a GET request: show a page prompting user to confirm the delete request
+    For a POST request: try to delete the item from the database
+    """
     try:
         selected_item = get_item_by_names(category_name, item_name)
     except:
@@ -338,14 +463,17 @@ def delete_item(category_name, item_name):
             flash_msg = 'Sorry, the current user does not have permission to '
             flash_msg += 'delete this item.'
             flash(flash_msg)
+            # show the item information along with the error message
             response = render_template('item.html', item=selected_item)
         elif request.method == 'GET':
+            # show a page prompting user to confirm the delete request
             response = render_template('delete_item.html', item=selected_item)
         else:
             # handle POST request
             session.delete(selected_item)
             session.commit()
             flash(item_name + ' has been deleted')
+            # show the category the deleted item was associated with
             response = redirect(
                 url_for('show_category', category_name=category_name))
     return response
