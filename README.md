@@ -29,6 +29,6 @@ This repository contains my submission for the Item Catalog Application project 
 ### Using the Catalog Application
 
 1. Click the login button to login into the application via Google Sign-In.
-2. Signed-In users can create, edit, and delete Items.
+2. Signed-In users can create, edit, and delete their own Items.
 3. Items can be viewed by anyone.  Click on any Category name to view related Items.
 4. Click on any Item to view the item's description.

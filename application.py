@@ -249,7 +249,8 @@ def create_item():
         new_item = Item(name=request.form['name'],
                         description=request.form['description'],
                         category=get_category_by_name(
-                            request.form['category']))
+                            request.form['category']),
+                        user_id=login_session['user_id'])
         session.add(new_item)
         session.commit()
         response = redirect(
@@ -291,30 +292,35 @@ def edit_item(category_name, item_name):
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
     else:
-        categories = get_categories()
-        if request.method == 'GET':
-            response = render_template('edit_item.html',
-                                       categories=categories,
-                                       item=selected_item)
+        if login_session['user_id'] != selected_item.user_id:
+            flash_msg = 'Sorry, the current user does not have permission '
+            flash_msg += 'to edit this item.'
+            flash(flash_msg)
+            response = render_template('item.html', item=selected_item)
         else:
-            # handle POST request
-            if request.form['name']:
-                selected_item.name = request.form['name']
-                selected_item.description = request.form['description']
-                selected_item.cat_id = get_category_by_name(
-                    request.form['category']).id
-                session.commit()
-                response = redirect(
-                    url_for('show_item',
-                            category_name=selected_item.category.name,
-                            item_name=selected_item.name))
-            else:
-                # handle case where name is empty
-                flash('Name cannot be empty.  Please edit the item again.')
+            categories = get_categories()
+            if request.method == 'GET':
                 response = render_template('edit_item.html',
                                            categories=categories,
                                            item=selected_item)
-
+            else:
+                # handle POST request
+                if request.form['name']:
+                    selected_item.name = request.form['name']
+                    selected_item.description = request.form['description']
+                    selected_item.cat_id = get_category_by_name(
+                        request.form['category']).id
+                    session.commit()
+                    response = redirect(
+                        url_for('show_item',
+                                category_name=selected_item.category.name,
+                                item_name=selected_item.name))
+                else:
+                    # handle case where name is empty
+                    flash('Name cannot be empty.  Please edit the item again.')
+                    response = render_template('edit_item.html',
+                                               categories=categories,
+                                               item=selected_item)
     return response
 
 
@@ -328,7 +334,12 @@ def delete_item(category_name, item_name):
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
     else:
-        if request.method == 'GET':
+        if login_session['user_id'] != selected_item.user_id:
+            flash_msg = 'Sorry, the current user does not have permission to '
+            flash_msg += 'delete this item.'
+            flash(flash_msg)
+            response = render_template('item.html', item=selected_item)
+        elif request.method == 'GET':
             response = render_template('delete_item.html', item=selected_item)
         else:
             # handle POST request
