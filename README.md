@@ -22,14 +22,13 @@ This repository contains my submission for the Item Catalog Application project 
 3. After the Vagrant virtual machine starts, run `vagrant ssh` to login.
 4. Run `cd /vagrant/catalog` to go to the project directory.
 5. Run `python database_setup.py` to create the project's PostgreSQL database.
-6. Run `python database_populate.py` to add some sample categories and items to the database.
+6. Run `python database_populate.py` to add categories to the database.
 7. Run `python application.py` to start the Project
 8. Navigate to `http://localhost:8000` in your favorite browser to use the project.
 
 ### Using the Catalog Application
 
-1. Click on any Category name to view items in the category.
-2. Click on any Item to view the item's description
-3. Use the login button to login into the application via Google Sign-In
-4. After login, items can be created, modified, or deleted.
-5. After logout, users can still view but not modify items.
+1. Click the login button to login into the application via Google Sign-In.
+2. Signed-In users can create, edit, and delete Items.
+3. Items can be viewed by anyone.  Click on any Category name to view related Items.
+4. Click on any Item to view the item's description.
