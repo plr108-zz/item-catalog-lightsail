@@ -8,6 +8,7 @@ from database_setup import Base, Category, Item, User
 from flask import Flask, flash, jsonify, make_response
 from flask import redirect, render_template, request, url_for
 from flask import session as login_session
+from functools import wraps
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
@@ -66,6 +67,17 @@ def get_user_id(email):
         return user.id
     except:
         return None
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash('Sorry, user permission is required to do that.')
+            return redirect('/login')
+    return decorated_function
 
 
 @app.route('/login')
@@ -231,10 +243,9 @@ def show_category_json(category_name):
 
 
 @app.route('/catalog/create', methods=['GET', 'POST'])
+@login_required
 def create_item():
-    if 'username' not in login_session:
-        response = redirect(url_for('show_categories'))
-    elif request.method == 'POST':
+    if request.method == 'POST':
         new_item = Item(name=request.form['name'],
                         description=request.form['description'],
                         category=get_category_by_name(
@@ -272,6 +283,7 @@ def show_item_json(category_name, item_name):
 
 @app.route('/catalog/<category_name>/<item_name>/edit',
            methods=['GET', 'POST'])
+@login_required
 def edit_item(category_name, item_name):
     try:
         selected_item = get_item_by_names(category_name, item_name)
@@ -279,40 +291,36 @@ def edit_item(category_name, item_name):
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
     else:
-        if 'username' not in login_session:
-            response = redirect(
-                url_for('show_item',
-                        category_name=selected_item.category.name,
-                        item_name=selected_item.name))
+        categories = get_categories()
+        if request.method == 'GET':
+            response = render_template('edit_item.html',
+                                       categories=categories,
+                                       item=selected_item)
         else:
-            categories = get_categories()
-            if request.method == 'GET':
+            # handle POST request
+            if request.form['name']:
+                selected_item.name = request.form['name']
+                selected_item.description = request.form['description']
+                selected_item.cat_id = get_category_by_name(
+                    request.form['category']).id
+                session.commit()
+                response = redirect(
+                    url_for('show_item',
+                            category_name=selected_item.category.name,
+                            item_name=selected_item.name))
+            else:
+                # handle case where name is empty
+                flash('Name cannot be empty.  Please edit the item again.')
                 response = render_template('edit_item.html',
                                            categories=categories,
                                            item=selected_item)
-            else:
-                # handle POST request
-                if request.form['name']:
-                    selected_item.name = request.form['name']
-                    selected_item.description = request.form['description']
-                    selected_item.cat_id = get_category_by_name(
-                        request.form['category']).id
-                    session.commit()
-                    response = redirect(
-                        url_for('show_item',
-                                category_name=selected_item.category.name,
-                                item_name=selected_item.name))
-                else:
-                    # handle case where name is empty
-                    flash('Name cannot be empty.  Please edit the item again.')
-                    response = render_template('edit_item.html',
-                                               categories=categories,
-                                               item=selected_item)
+
     return response
 
 
 @app.route('/catalog/<category_name>/<item_name>/delete',
            methods=['GET', 'POST'])
+@login_required
 def delete_item(category_name, item_name):
     try:
         selected_item = get_item_by_names(category_name, item_name)
@@ -320,22 +328,15 @@ def delete_item(category_name, item_name):
         response = 'Item not found: ' + item_name
         print sys.exc_info()[0]
     else:
-        if 'username' not in login_session:
-            response = redirect(
-                url_for('show_item',
-                        category_name=selected_item.category.name,
-                        item_name=selected_item.name))
+        if request.method == 'GET':
+            response = render_template('delete_item.html', item=selected_item)
         else:
-            if request.method == 'GET':
-                response = render_template('delete_item.html',
-                                           item=selected_item)
-            else:
-                # handle POST request
-                session.delete(selected_item)
-                session.commit()
-                flash(item_name + ' has been deleted')
-                response = redirect(
-                    url_for('show_category', category_name=category_name))
+            # handle POST request
+            session.delete(selected_item)
+            session.commit()
+            flash(item_name + ' has been deleted')
+            response = redirect(
+                url_for('show_category', category_name=category_name))
     return response
 
 

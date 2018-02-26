@@ -23,6 +23,7 @@
           </ul>
         </nav>
       </div>
+      {% include "flash_content.html" %} {% block flash_content %} {% endblock %}
       <div id='sign-in-prompt'>Click the button to Sign in using your Google account</div>
       <!-- div for showing sign-in results -->
       <div id="result"></div>
@@ -37,6 +38,8 @@
         if (authResult['code']) {
           // hide the sign-in button
           $('#signinButton').attr('style', 'display: none');
+          // remove any flash messages
+          $('#flash').remove();
           // hide sign-in prompt
           $('#sign-in-prompt').attr('style', 'display: none');
           // Send the one-time-use code to the server, if the server responds,
