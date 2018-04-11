@@ -15,13 +15,13 @@ from sqlalchemy.orm import sessionmaker
 # Import the name of the place where the Flask application is defined
 app = Flask(__name__)
 # Load the Catalog database and create a database session object
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine('postgresql+psycopg2://grader:1isGraderThan0@localhost/catalog')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 # Get the client id for Google OAuth2 Sign-In
 CLIENT_ID = json.loads(
-    open('google_oauth2_client.json', 'r').read())['web']['client_id']
+    open('/var/www/catalog/catalog/google_oauth2_client.json', 'r').read())['web']['client_id']
 
 
 def get_categories():
@@ -165,7 +165,7 @@ def gconnect():
     try:
         # Upgrade the authorization code into a credentials object
         oauth_flow = flow_from_clientsecrets(
-            'google_oauth2_client.json', scope='')
+            '/var/www/catalog/catalog/google_oauth2_client.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -482,4 +482,4 @@ def delete_item(category_name, item_name):
 if __name__ == '__main__':
     app.debug = True
     app.secret_key = '#if~you^can_read*this=it`s-too+late'
-    app.run(host='0.0.0.0', port=8000)
+    app.run()
